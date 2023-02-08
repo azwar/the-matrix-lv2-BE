@@ -39,6 +39,8 @@ export class AuthService {
     }
 
     if (tmpUser) {
+      delete tmpUser.password;
+
       return {
         access_token: this.jwtService.sign(
           {
@@ -47,6 +49,7 @@ export class AuthService {
           },
           { secret: JWT_SERCRET },
         ),
+        user: tmpUser,
       };
     }
 

@@ -14,7 +14,8 @@ export class MatrixService {
       if (foundIndex === -1) {
         const strMatrix = item.matrix;
         const objMatrix = JSON.parse(strMatrix);
-        const coordinate = this.searchItem2DArray(objMatrix, id);
+        // const coordinate = this.searchItem2DArray(objMatrix, id);
+        const coordinate = this.searchItemBinary(objMatrix, id);
 
         if (coordinate) {
           foundIndex = index;
@@ -33,6 +34,10 @@ export class MatrixService {
     return false;
   }
 
+  /**
+   * Binary Serch - Per Row Block jump
+   * Time complexity O(N + M), where N is the number of rows and M is the number of columns
+   */
   searchItem2DArray(
     matrix: number[][],
     target: number,
@@ -41,8 +46,11 @@ export class MatrixService {
     const col = matrix[0].length;
     let r = 0,
       c = col - 1;
+    let i = 1; // to track iteration
 
     while (r < row && c >= 0) {
+      console.log('iteration:' + i);
+
       if (matrix[r][c] === target) {
         return [r, c];
       } else if (matrix[r][c] > target) {
@@ -50,6 +58,38 @@ export class MatrixService {
       } else {
         r++;
       }
+
+      i++;
+    }
+
+    return false;
+  }
+
+  /**
+   * Binary Search - Improved version
+   * Time complexity O(log N)
+   */
+  searchItemBinary(
+    arr: number[][],
+    target: number,
+  ): [number, number] | boolean {
+    const row = arr.length;
+    const col = arr[0].length;
+    let l = 0,
+      h = row * col - 1;
+    let i = 1; // to track iteration
+
+    while (l <= h) {
+      const mid = l + Math.floor((h - l) / 2);
+      const tC = mid % col;
+      const tR = Math.floor(mid / col);
+      const val = arr[tR][tC];
+      if (val == target) return [tR, tC];
+
+      if (val < target) l = mid + 1;
+      else h = mid - 1;
+
+      i++;
     }
 
     return false;
